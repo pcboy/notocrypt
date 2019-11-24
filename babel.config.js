@@ -50,6 +50,7 @@ module.exports = function(api) {
       '@babel/plugin-syntax-dynamic-import',
       isTestEnv && 'babel-plugin-dynamic-import-node',
       '@babel/plugin-transform-destructuring',
+      [require("@babel/plugin-proposal-decorators"), { legacy: true }],
       [
         '@babel/plugin-proposal-class-properties',
         {

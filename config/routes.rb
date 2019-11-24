@@ -4,4 +4,8 @@ Rails.application.routes.draw do
   root to: 'welcome#index'
 
   get "/:uid", to: 'user#show'
+  post "/:uid/notes", to: 'notes#create'
+  get "/:uid/notes", to: 'notes#index'
+
+  post "/:uid", to: 'user#create'
 end
