@@ -3,7 +3,7 @@ class Note < ApplicationRecord
     {
       id: self.id,
       nonce: self.nonce,
-      content: self.content,
+      ciphertext: self.ciphertext,
     }
   end
 end

@@ -13,7 +13,7 @@
 ActiveRecord::Schema.define(version: 2019_11_24_061155) do
 
   create_table "notes", force: :cascade do |t|
-    t.json "content"
+    t.text "ciphertext", limit: 10240
     t.string "nonce"
     t.integer "user_id"
     t.datetime "created_at", precision: 6, null: false

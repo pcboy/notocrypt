@@ -11,12 +11,13 @@ import { FromBase64 } from "../Utils";
 class Note {
   @observable id = null;
   @observable content = null;
+  @observable ciphertext = null;
   @observable nonce = null;
   @observable locked = true;
 
   constructor(noteResponse) {
     this.id = noteResponse.id;
-    this.content = noteResponse.content;
+    this.ciphertext = noteResponse.ciphertext;
     this.nonce = noteResponse.nonce;
   }
 
@@ -29,7 +30,7 @@ class Note {
     try {
       if (this.locked) {
         let cleartext = await sodium.crypto_secretbox_open_easy(
-          FromBase64(this.content),
+          FromBase64(this.ciphertext),
           FromBase64(this.nonce),
           FromBase64(userStore.pdKey)
         );

@@ -52,11 +52,10 @@ class UserStore {
       nonce,
       FromBase64(this.pdKey)
     );
-    console.log("ADD NOTE");
 
     return axios
       .post(`/${this.uid()}/notes`, {
-        content: ToBase64(ciphertext),
+        ciphertext: ToBase64(ciphertext),
         nonce: ToBase64(nonce)
       })
       .then(response => {
@@ -103,7 +102,7 @@ class UserStore {
     this.pdKey = ToBase64(pdKey);
 
     return axios.post(`/${uid}/`, { salt: this.salt }).then(() => {
-      this.addNote("test");
+      this.addNote("Your First note!");
     });
   }
 }
