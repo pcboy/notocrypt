@@ -15,6 +15,12 @@ const SNote = styled.div`
   transition-property: background, border, opacity, box-shadow, transform;
   transition-timing-function: ease-in;
 
+  p.title {
+    font-family: Open Sans;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+
   &:hover {
     box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
       0 1px 3px 1px rgba(60, 64, 67, 0.149);
@@ -25,19 +31,17 @@ const SNote = styled.div`
 class Note extends Component {
   state = {};
 
-  unlock = e => {
-    //userStore.unlockNote(this.props.note);
-    this.props.note.unlock();
-  };
-
   componentDidMount() {
-    this.unlock();
+    this.props.note.unlock();
   }
 
   render() {
     return (
       <div className="column is-2">
-        <SNote>{this.props.note.content || this.props.note.ciphertext}</SNote>
+        <SNote>
+          <p className="title">{this.props.note.content}</p>
+          {this.props.note.content || this.props.note.ciphertext}
+        </SNote>
       </div>
     );
   }
