@@ -42,7 +42,7 @@ class Notocrypt extends Component {
         userStore.notes.forEach(n => n.unlock());
       });
     } else {
-      userStore.register(userStore.uid(), password);
+      userStore.register(userStore.uid, password);
     }
   };
 
@@ -74,7 +74,9 @@ class Notocrypt extends Component {
           </div>
           <div className="columns is-multiline ">
             {userStore.notes.length > 0 &&
-              userStore.notes.map(note => <Note key={note.id} note={note} />)}
+              userStore.notes.map(note => (
+                <Note key={note.nonce} note={note} />
+              ))}
           </div>
         </div>
       </div>

@@ -22,10 +22,10 @@ class UserStore {
     await sodium.ready;
   }
 
-  uid = () => {
+  @computed get uid() {
     let u = window.location.pathname;
     return u.substr(1, u.length - 1);
-  };
+  }
 
   @computed get isLoggedIn() {
     return !!this.pdKey;
@@ -37,30 +37,16 @@ class UserStore {
   }
 
   @action getNotes() {
-    return axios.get(`/${this.uid()}/notes`).then(response => {
-      this.notes = response.data.map(note => new Note(note));
+    return axios.get(`/${this.uid}/notes`).then(response => {
+      this.notes = response.data.map(note => Note.fromServerResponse(note));
     });
   }
 
-  @action async addNote(note) {
-    let nonce = await sodium.randombytes_buf(
-      sodium.crypto_secretbox_NONCEBYTES
-    );
-
-    let ciphertext = await sodium.crypto_secretbox_easy(
-      note,
-      nonce,
-      FromBase64(this.pdKey)
-    );
-
-    return axios
-      .post(`/${this.uid()}/notes`, {
-        ciphertext: ToBase64(ciphertext),
-        nonce: ToBase64(nonce)
-      })
-      .then(response => {
-        this.notes.push(new Note(response.data));
-      });
+  @action async addNote(content) {
+    let note = new Note(content, { info: "simpleNote" });
+    note.save().then(() => {
+      userStore.notes.push(note);
+    });
   }
 
   @action async checkPassword(salt64, password) {
