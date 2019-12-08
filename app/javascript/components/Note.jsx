@@ -19,6 +19,7 @@ const SNote = styled.div`
     font-family: Open Sans;
     font-weight: 500;
     font-size: 1rem;
+    line-height: 1.5rem;
   }
 
   &:hover {
@@ -36,11 +37,12 @@ class Note extends Component {
   }
 
   render() {
+    const title = this.props.note.metadata && this.props.note.metadata.title;
     return (
       <div className="column is-2">
         <SNote>
-          <p className="title">{this.props.note.content}</p>
-          {this.props.note.content || this.props.note.ciphertext}
+          <p className="title">{title}</p>
+          <p className="content">{this.props.note.content}</p>
         </SNote>
       </div>
     );

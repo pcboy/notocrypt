@@ -9,6 +9,7 @@ import { observer } from "mobx-react";
 import styled from "styled-components";
 
 import Note from "./Note";
+import NoteEditor from "./NoteEditor";
 
 @observer
 class Notocrypt extends Component {
@@ -21,14 +22,6 @@ class Notocrypt extends Component {
 
     userStore.getNotes();
   }
-
-  newNote = e => {
-    e.preventDefault();
-    let formData = new FormData(e.target);
-    let content = formData.get("content");
-
-    userStore.addNote(content);
-  };
 
   handleSubmitPassword = async e => {
     e.preventDefault();
@@ -63,14 +56,7 @@ class Notocrypt extends Component {
         <div className="container">
           <div className="columns is-multiline is-centered">
             <div className="column is-8">
-              <form onSubmit={this.newNote}>
-                <textarea
-                  className="textarea"
-                  name="content"
-                  placeholder="write a new note"
-                ></textarea>
-                <button className="button is-primary">SUBMIT</button>
-              </form>
+              <NoteEditor style={{ marginTop: "3rem" }} />
             </div>
           </div>
           <div className="columns is-multiline ">

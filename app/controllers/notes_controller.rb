@@ -16,7 +16,6 @@ class NotesController < ApplicationController
       note = u.notes.create(nonce: permitted[:nonce], ciphertext: permitted[:ciphertext])
       return render json: note.to_h
     end
-
   end
 
   private

@@ -45,8 +45,9 @@ class UserStore {
       .catch(err => this.reset());
   }
 
-  @action async addNote(content) {
-    let note = new Note(content, { info: "simpleNote" });
+  @action async addNote(content, title) {
+    let note = new Note(content, { info: "simpleNote", title: title });
+    console.log(note);
     note.save().then(() => {
       userStore.notes.push(note);
     });
