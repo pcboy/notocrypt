@@ -49,7 +49,7 @@ class UserStore {
     let note = new Note(content, { info: "simpleNote", title: title });
     console.log(note);
     note.save().then(() => {
-      userStore.notes.push(note);
+      userStore.notes.unshift(note);
     });
   }
 

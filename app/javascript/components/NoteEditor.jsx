@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import userStore from "./UserStore";
 
 import ContentEditable from "react-contenteditable";
+import sanitizeHtml from "sanitize-html";
 
 import styled from "styled-components";
 
@@ -25,6 +26,7 @@ const SNoteEditor = styled.div`
   }
   .note-content {
     min-height: 4.6rem;
+    line-height: 2rem;
   }
 
   .note-commands {
@@ -47,6 +49,11 @@ const SNoteEditor = styled.div`
 class NoteEditor extends Component {
   state = { title: "Title", content: "Take a note..." };
 
+  sanitizeConf = {
+    allowedTags: [],
+    allowedAttributes: {}
+  };
+
   newNote = e => {
     e.preventDefault();
 
@@ -54,11 +61,11 @@ class NoteEditor extends Component {
   };
 
   handleChangeTitle = e => {
-    this.setState({ title: e.target.value });
+    this.setState({ title: sanitizeHtml(e.target.value, this.sanitizeConf) });
   };
 
   handleChangeContent = e => {
-    this.setState({ content: e.target.value });
+    this.setState({ content: sanitizeHtml(e.target.value, this.sanitizeConf) });
   };
 
   render() {

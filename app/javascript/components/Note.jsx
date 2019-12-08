@@ -17,9 +17,18 @@ const SNote = styled.div`
 
   p.title {
     font-family: Open Sans;
+
     font-weight: 500;
-    font-size: 1rem;
-    line-height: 1.5rem;
+  }
+
+  p.content {
+    font-family: Roboto;
+  }
+
+  p.title,
+  p.content {
+    font-size: 1.6rem;
+    line-height: 2.4rem;
   }
 
   &:hover {
