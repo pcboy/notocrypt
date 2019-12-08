@@ -37,9 +37,12 @@ class UserStore {
   }
 
   @action getNotes() {
-    return axios.get(`/${this.uid}/notes`).then(response => {
-      this.notes = response.data.map(note => Note.fromServerResponse(note));
-    });
+    return axios
+      .get(`/${this.uid}/notes`)
+      .then(response => {
+        this.notes = response.data.map(note => Note.fromServerResponse(note));
+      })
+      .catch(err => this.reset());
   }
 
   @action async addNote(content) {
@@ -49,9 +52,7 @@ class UserStore {
     });
   }
 
-  @action async checkPassword(salt64, password) {
-    let note = this.notes[0];
-
+  @action async authenticate(salt64, nonce, password) {
     let salt = FromBase64(salt64);
     let pdKey = await sodium.crypto_pwhash(
       sodium.crypto_box_SEEDBYTES,
@@ -62,13 +63,22 @@ class UserStore {
       sodium.crypto_pwhash_ALG_DEFAULT
     );
     this.pdKey = ToBase64(pdKey);
+    let keypair = await sodium.crypto_sign_seed_keypair(pdKey);
 
-    try {
-      note.unlock();
-    } catch (err) {
-      this.pdKey = null;
-      throw err;
-    }
+    let signature = sodium.crypto_sign_detached(nonce, keypair.privateKey);
+
+    return axios
+      .post(`/${this.uid}/authenticate`, {
+        nonce: nonce,
+        signature64: ToBase64(signature)
+      })
+      .then(
+        response =>
+          (this.notes = response.data.map(note =>
+            Note.fromServerResponse(note)
+          ))
+      )
+      .catch(err => this.reset());
   }
 
   @action async register(uid, password) {
@@ -85,11 +95,18 @@ class UserStore {
       sodium.crypto_pwhash_ALG_DEFAULT
     );
 
+    let keypair = await sodium.crypto_sign_seed_keypair(pdKey);
+
     this.pdKey = ToBase64(pdKey);
 
-    return axios.post(`/${uid}/`, { salt: this.salt }).then(() => {
-      this.addNote("Your First note!");
-    });
+    return axios
+      .post(`/${uid}/`, {
+        salt: this.salt,
+        pubkey64: ToBase64(keypair.publicKey)
+      })
+      .then(() => {
+        this.addNote("Your First note!");
+      });
   }
 }
 

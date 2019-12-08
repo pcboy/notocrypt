@@ -24,6 +24,8 @@ ActiveRecord::Schema.define(version: 2019_11_24_061155) do
   create_table "users", force: :cascade do |t|
     t.string "uid"
     t.string "salt"
+    t.string "pubkey"
+    t.string "challenge_nonce"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["uid"], name: "index_users_on_uid", unique: true

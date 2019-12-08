@@ -1,2 +1,2 @@
 .user-page
-  =react_component('Notocrypt', {salt: @user&.salt})
+  =react_component('Notocrypt', {salt: @user&.salt, challenge_nonce: @user&.challenge_nonce})

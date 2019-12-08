@@ -8,4 +8,5 @@ Rails.application.routes.draw do
   get "/:uid/notes", to: 'notes#index'
 
   post "/:uid", to: 'user#create'
+  post "/:uid/authenticate", to: 'user#authenticate'
 end

@@ -70,14 +70,12 @@ class Note {
   @action async unlock() {
     try {
       if (this.locked) {
-        console.log(this.ciphertext);
         let cleartext = await sodium.crypto_secretbox_open_easy(
           FromBase64(this.ciphertext),
           FromBase64(this.nonce),
           FromBase64(userStore.pdKey)
         );
         let json = JSON.parse(new TextDecoder("utf-8").decode(cleartext));
-        console.log(json);
         this.content = json.content;
         this.metadata = json.metadata;
         this.locked = false;

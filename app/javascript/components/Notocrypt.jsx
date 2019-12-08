@@ -34,13 +34,14 @@ class Notocrypt extends Component {
     e.preventDefault();
     let formData = new FormData(e.target);
     let password = formData.get("password");
-    console.log(password);
 
-    // Not new account
-    if (this.props.salt) {
-      userStore.checkPassword(this.props.salt, password).then(response => {
-        userStore.notes.forEach(n => n.unlock());
-      });
+    // Account exists, so try to log in
+    if (this.props.salt && this.props.challenge_nonce) {
+      userStore
+        .authenticate(this.props.salt, this.props.challenge_nonce, password)
+        .then(response => {
+          userStore.notes.forEach(n => n.unlock());
+        });
     } else {
       userStore.register(userStore.uid, password);
     }
