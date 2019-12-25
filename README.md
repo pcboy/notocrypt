@@ -5,7 +5,9 @@ WIP
 ## Background
 
 I use Google keep a lot and that scares me a bit so I made Notocrypt. It's a fully client side encrypted alternative.  
-Beware: It's still pretty much a work in progress and I don't have a lot of spare time to work on it.
+Beware: It's still pretty much a work in progress and I don't have a lot of spare time to work on it.  
+
+Current Status: Can Create / Edit / Delete notes.
 
 ## Usage
 
