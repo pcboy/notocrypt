@@ -53,6 +53,10 @@ class UserStore {
     });
   }
 
+  @action removeNote(note) {
+    userStore.notes = userStore.notes.filter(x => x != note);
+  }
+
   @action async authenticate(salt64, nonce, password) {
     let salt = FromBase64(salt64);
     let pdKey = await sodium.crypto_pwhash(

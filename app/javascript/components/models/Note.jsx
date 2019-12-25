@@ -25,12 +25,16 @@ class Note {
     this.metadata = metadata;
   }
 
+  fromServerResponse(noteResponse) {
+    this.id = noteResponse.id;
+    this.ciphertext = noteResponse.ciphertext;
+    this.nonce = noteResponse.nonce;
+  }
+
   static fromServerResponse(noteResponse) {
     let note = new Note(null, null);
 
-    note.id = noteResponse.id;
-    note.ciphertext = noteResponse.ciphertext;
-    note.nonce = noteResponse.nonce;
+    note.fromServerResponse(noteResponse);
 
     return note;
   }
@@ -55,11 +59,21 @@ class Note {
         nonce: this.nonce
       });
     } else {
-      return axios.post(`/${userStore.uid}/notes`, {
-        ciphertext: this.ciphertext,
-        nonce: this.nonce
-      });
+      return axios
+        .post(`/${userStore.uid}/notes`, {
+          ciphertext: this.ciphertext,
+          nonce: this.nonce
+        })
+        .then(response => {
+          this.fromServerResponse(response.data);
+        });
     }
+  }
+
+  @action async delete() {
+    return axios.delete(`/${userStore.uid}/notes/${this.id}`).then(() => {
+      userStore.removeNote(this);
+    });
   }
 
   @action async lock() {

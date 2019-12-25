@@ -1,12 +1,29 @@
 class NotesController < ApplicationController
-
   before_action :check_auth
 
   def index
     if u = User.find_by(uid: session[:uid])
-      return render json: u.notes.map(&:to_h)
+      return render json: u.notes.order(:created_at).reverse.map(&:to_h)
     end
     return render json: []
+  end
+
+  def update
+    permitted = params.required(:note).permit(:nonce, :ciphertext)
+
+    if u = User.find_by(uid: session[:uid]) and note = u.notes.find(params[:id])
+      note.update(permitted)
+      return render json: note.to_h
+    end
+    return head :forbidden
+  end
+
+  def destroy
+    if u = User.find_by(uid: session[:uid]) and note = u.notes.find(params[:id])
+      note.destroy
+      return head :ok
+    end
+    return head :forbidden
   end
 
   def create
@@ -25,5 +42,4 @@ class NotesController < ApplicationController
       return head :forbidden
     end
   end
-
 end

@@ -11,9 +11,20 @@ import styled from "styled-components";
 import Note from "./Note";
 import NoteEditor from "./NoteEditor";
 
+const SPasswordForm = styled.div`
+  text-align: center;
+  max-width: 50rem;
+  margin: auto;
+  h1 {
+    margin-bottom: 5rem;
+    font-size: 3rem;
+    font-weight: bold;
+  }
+`;
+
 @observer
 class Notocrypt extends Component {
-  state = {};
+  state = { acountExists: false };
 
   async componentDidMount() {
     ReactModal.setAppElement("body");
@@ -21,6 +32,10 @@ class Notocrypt extends Component {
     await userStore.initSodium();
 
     userStore.getNotes();
+
+    if (this.props.salt && this.props.challenge_nonce) {
+      this.setState({ accountExists: true });
+    }
   }
 
   handleSubmitPassword = async e => {
@@ -29,7 +44,7 @@ class Notocrypt extends Component {
     let password = formData.get("password");
 
     // Account exists, so try to log in
-    if (this.props.salt && this.props.challenge_nonce) {
+    if (this.state.accountExists) {
       userStore
         .authenticate(this.props.salt, this.props.challenge_nonce, password)
         .then(response => {
@@ -49,9 +64,22 @@ class Notocrypt extends Component {
           onAfterOpen={() => true}
           onRequestClose={() => true}
         >
-          <form onSubmit={this.handleSubmitPassword}>
-            <input type="text" name="password" placeholder="password"></input>
-          </form>
+          <SPasswordForm>
+            {this.state.accountExists ? (
+              <>
+                <h1>This vault is protected.</h1>
+                <h1>Enter password.</h1>
+              </>
+            ) : (
+              <>
+                <h1>This is a new vault. </h1>
+                <h1>Enter a password to protect it.</h1>
+              </>
+            )}
+            <form onSubmit={this.handleSubmitPassword}>
+              <input type="text" name="password" placeholder="password"></input>
+            </form>
+          </SPasswordForm>
         </ReactModal>
         <div className="container">
           <div className="columns is-multiline is-centered">

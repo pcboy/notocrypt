@@ -58,19 +58,32 @@ class NoteEditor extends Component {
   state = {
     title: this.titlePlaceholder,
     content: this.contentPlaceholder,
-    dirtyTitle: false,
-    dirtyContent: false
+    dirtyContent: false,
+    dirtyTitle: false
   };
 
   sanitizeConf = {
-    allowedTags: [],
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(["br"]),
     allowedAttributes: {}
+  };
+
+  reset = () => {
+    this.setState({
+      title: this.titlePlaceholder,
+      content: this.contentPlaceholder,
+      dirtyContent: false,
+      dirtyTitle: false
+    });
   };
 
   newNote = e => {
     e.preventDefault();
 
-    userStore.addNote(this.state.content, this.state.title);
+    console.log("new note");
+
+    userStore.addNote(this.state.content, this.state.title).then(() => {
+      this.reset();
+    });
   };
 
   handleChangeTitle = e => {
@@ -133,6 +146,7 @@ class NoteEditor extends Component {
             onBlur={this.handleBlurContent}
             html={this.state.content} // innerHTML of the editable div
             onChange={this.handleChangeContent} // handle innerHTML change
+            onSubmit={this.newNote}
           />
 
           <div className="note-commands">
