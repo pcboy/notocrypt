@@ -24,6 +24,11 @@ const SNoteEditor = styled.div`
   .note-content {
     padding: 10px 15px;
   }
+
+  .note-title {
+    min-height: 3.25rem;
+  }
+
   .note-content {
     min-height: 4.6rem;
     line-height: 2rem;
@@ -47,7 +52,15 @@ const SNoteEditor = styled.div`
 `;
 
 class NoteEditor extends Component {
-  state = { title: "Title", content: "Take a note..." };
+  titlePlaceholder = "Title";
+  contentPlaceholder = "Take a note...";
+
+  state = {
+    title: this.titlePlaceholder,
+    content: this.contentPlaceholder,
+    dirtyTitle: false,
+    dirtyContent: false
+  };
 
   sanitizeConf = {
     allowedTags: [],
@@ -61,11 +74,43 @@ class NoteEditor extends Component {
   };
 
   handleChangeTitle = e => {
-    this.setState({ title: sanitizeHtml(e.target.value, this.sanitizeConf) });
+    const title = sanitizeHtml(e.target.value, this.sanitizeConf);
+    this.setState({
+      title: title,
+      dirtyTitle: title ? true : false
+    });
   };
 
   handleChangeContent = e => {
-    this.setState({ content: sanitizeHtml(e.target.value, this.sanitizeConf) });
+    const content = sanitizeHtml(e.target.value, this.sanitizeConf);
+    this.setState({
+      content: content,
+      dirtyContent: content ? true : false
+    });
+  };
+
+  handleFocusTitle = e => {
+    if (!this.state.dirtyTitle) {
+      this.setState({ title: "" });
+    }
+  };
+
+  handleBlurTitle = e => {
+    if (!this.state.dirtyTitle) {
+      this.setState({ title: this.titlePlaceholder });
+    }
+  };
+
+  handleFocusContent = e => {
+    if (!this.state.dirtyContent) {
+      this.setState({ content: "" });
+    }
+  };
+
+  handleBlurContent = e => {
+    if (!this.state.dirtyContent) {
+      this.setState({ content: this.contentPlaceholder });
+    }
   };
 
   render() {
@@ -75,6 +120,8 @@ class NoteEditor extends Component {
           <ContentEditable
             name="title"
             className="note-title"
+            onFocus={this.handleFocusTitle}
+            onBlur={this.handleBlurTitle}
             html={this.state.title} // innerHTML of the editable div
             onChange={this.handleChangeTitle} // handle innerHTML change
           />
@@ -82,6 +129,8 @@ class NoteEditor extends Component {
           <ContentEditable
             name="content"
             className="note-content"
+            onFocus={this.handleFocusContent}
+            onBlur={this.handleBlurContent}
             html={this.state.content} // innerHTML of the editable div
             onChange={this.handleChangeContent} // handle innerHTML change
           />
