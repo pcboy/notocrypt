@@ -39,6 +39,7 @@ group :development, :test do
   gem 'awesome_print'
   gem 'looksee'
   gem 'rspec-rails'
+  gem 'database_cleaner'
 end
 
 group :development do
